@@ -1,0 +1,2 @@
+/api/* https://your-new-vercel-url.vercel.app/:splat  200
+/* /index.html   200
