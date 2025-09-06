@@ -4,8 +4,17 @@ import Product from '../models/productModel.js';
 // @route   GET /api/products
 // @access  Public
 const getProducts = async (req, res) => {
+    console.log(req.query);
     try {
-        const products = await Product.find({});
+        const keywords = req.query.keywords
+            ? {
+                  name: {
+                      $regex: req.query.keywords,
+                      $options: 'i',
+                  },
+              }
+            : {};
+        const products = await Product.find({ ...keywords });
         res.json(products);
     } catch (error) {
         res.status(500).json({ message: error.message });
