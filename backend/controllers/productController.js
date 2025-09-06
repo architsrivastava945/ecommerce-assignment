@@ -28,4 +28,29 @@ const getProductById = async (req, res) => {
     }
 };
 
-export { getProducts, getProductById };
+
+// @desc    Create a product
+// @route  POST /api/products
+// @access  Private
+const createProduct = async (req, res) => {
+    try{
+        const product = new Product({
+            name: 'Sample name',
+            price: 0,
+            user: req.user._id,
+            image: '/images/sample.jpg',
+            brand: 'Sample brand',
+            category: 'Sample category',
+            countInStock: 0,
+            numReviews: 0,
+            description: 'Sample description',
+        });
+        
+        const createdProduct = await product.save();
+        res.status(201).json(createdProduct);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export { getProducts, getProductById, createProduct };
