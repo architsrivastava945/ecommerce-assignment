@@ -56,4 +56,41 @@ const addToCart = async (req, res) => {
     }
 };
 
-export { addToCart };
+// @desc    Get user's cart
+// @route   GET /api/cart
+// @access  Private
+const getCart = async (req, res) => {
+  try {
+    const cart = await Cart.findOne({ user: req.user._id });
+    if (!cart) {
+      return res.json({ cartItems: [] });
+    }
+    res.json(cart);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+// @desc    Remove item from cart
+// @route   DELETE /api/cart/:productId
+// @access  Private
+const removeFromCart = async (req, res) => {
+  try {
+    const cart = await Cart.findOne({ user: req.user._id });
+    if (cart) {
+      cart.cartItems = cart.cartItems.filter(
+        (item) => item.product.toString() !== req.params.productId
+      );
+      await cart.save();
+      res.json(cart);
+    } else {
+      res.status(404).json({ message: 'Cart not found' });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+export { addToCart, getCart, removeFromCart }; 
